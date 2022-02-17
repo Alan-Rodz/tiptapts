@@ -19,7 +19,7 @@ export const MetadataSection: React.FC<Props> = ({ color, borderRadius, whatever
       </Box>
 
       <Box width='100%' height='100%' overflow='scroll'>
-        <pre>{displayCorrectFormat(whatever)}</pre>
+        <pre>{displayCorrectFormat('Currently Pending')}</pre>
       </Box>
     </Box>
   );

@@ -32,6 +32,7 @@ function App() {
     return () => {editor?.off('update', handleUpdate); };
   }, [editor])
 
+  // ... Visuals .................................................................
   return (
     <Grid h='100vh' templateRows='repeat(10, 1fr)' templateColumns='repeat(10, 1fr)' gap={1}> {/* // Make a 10x10 Grid */}
 
