@@ -1,34 +1,43 @@
 import { Grid, GridItem } from '@chakra-ui/react';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { MenuBar } from './component/MenuBar';
+import { DocumentSection } from './component/section/DocumentSection';
+import { MetadataSection } from './component/section/MetadataSection';
+import { SelectionSection } from './component/section/SelectionSection';
+import { StepSection } from './component/section/StepSection';
 
-import { TipTapEditor } from './component/TipTapEditor';
 
 // ********************************************************************************
 const BORDER_RADIUS = 15;
 export const GLOBAL_COLOR = '#EAF2EF';
 
 // ********************************************************************************
+const initialContent = '<p>Type...</p>'
 function App() {
+  const editor = useEditor({ extensions: [StarterKit], content: initialContent, });
   return (
     <Grid h='100vh' templateRows='repeat(10, 1fr)' templateColumns='repeat(10, 1fr)' gap={1}> {/* // Make a 10x10 Grid */}
 
       <GridItem overflowX={'scroll'} overflowY={'scroll'} gridAutoFlow={'column'} rowSpan={7} colSpan={8} bg={GLOBAL_COLOR} borderRadius={BORDER_RADIUS}> {/* Spans 7 rows, 8 columns, Playground Component */}
-        <TipTapEditor/>
+        <MenuBar editor={editor!}/>
+        <EditorContent editor={editor} />
       </GridItem>
 
       <GridItem rowSpan={10} colSpan={2} colStart={9} mb={2}> {/* Spans 10 rows, 2 columns, starts at column 9, this is the Metadata Area*/}
-        {/* <MetadataSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} whatever={editorState.tr} /> */}
+        <MetadataSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} whatever={editor?.state} />
       </GridItem>
 
       <GridItem rowSpan={3} colSpan={2} rowStart={8} colStart={1} mb={2}> {/* Spans 3 rows, 2 columns, starts at row 8, column 1, this is the Selection Area*/}
-        {/* <SelectionSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} selection={editorState.tr.selection} /> */}
+        <SelectionSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} selection={editor?.state.selection} />
       </GridItem>
 
       <GridItem rowSpan={3} colSpan={3} rowStart={8} colStart={3} mb={2}> {/* Spans 3 rows, 3 columns, starts at row 8, column 3, this is the Operations area */}
-        {/* <StepSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} steps={steps} /> */}
+        <StepSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} steps={editor?.state.tr} />
       </GridItem>
 
       <GridItem rowSpan={3} colSpan={3} rowStart={8} colStart={6} mb={2}> {/* Spans 3 rows, 3 columns, starts at row 8, column 6, this is the Document Area */}
-        {/* <DocumentSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} document={editorState.tr.doc} /> */}
+        <DocumentSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} document={editor?.state.doc} />
       </GridItem>
     </Grid>  );
 }

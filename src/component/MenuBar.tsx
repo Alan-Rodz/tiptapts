@@ -3,9 +3,7 @@ import { Editor } from '@tiptap/react'
 type Props = Readonly<{ editor: Editor; }>
 
 export const MenuBar: React.FC <Props> = ({ editor }) => {
-  if (!editor) {
-    return null
-  }
+  if (!editor) { return null; }
 
   return (
     <>
