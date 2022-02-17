@@ -1,6 +1,10 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { EditorContent, useEditor } from '@tiptap/react';
+import { Editor } from '@tiptap/core'; /*import from tiptap/core instead of tiptap/react to prevent type error*/
+import { Transaction } from 'prosemirror-state';
 import StarterKit from '@tiptap/starter-kit';
+import { useEffect, useState } from 'react';
+
 import { MenuBar } from './component/MenuBar';
 import { DocumentSection } from './component/section/DocumentSection';
 import { MetadataSection } from './component/section/MetadataSection';
@@ -15,7 +19,19 @@ export const GLOBAL_COLOR = '#EAF2EF';
 // ********************************************************************************
 const initialContent = '<p>Type...</p>'
 function App() {
+  // ... States ...................................................................
+  const [steps, setSteps] = useState<any>();
   const editor = useEditor({ extensions: [StarterKit], content: initialContent, });
+
+  // ... Rendering Logic ..........................................................
+  useEffect(() => {
+    const handleUpdate = ({editor, transaction}: { editor: Editor; transaction: Transaction<any>; }) => {
+      setSteps(transaction.steps);
+    };
+    editor?.on('update', handleUpdate);
+    return () => {editor?.off('update', handleUpdate); };
+  }, [editor])
+
   return (
     <Grid h='100vh' templateRows='repeat(10, 1fr)' templateColumns='repeat(10, 1fr)' gap={1}> {/* // Make a 10x10 Grid */}
 
@@ -25,7 +41,7 @@ function App() {
       </GridItem>
 
       <GridItem rowSpan={10} colSpan={2} colStart={9} mb={2}> {/* Spans 10 rows, 2 columns, starts at column 9, this is the Metadata Area*/}
-        <MetadataSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} whatever={editor?.state} />
+        <MetadataSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} whatever={editor?.getJSON()} />
       </GridItem>
 
       <GridItem rowSpan={3} colSpan={2} rowStart={8} colStart={1} mb={2}> {/* Spans 3 rows, 2 columns, starts at row 8, column 1, this is the Selection Area*/}
@@ -33,7 +49,7 @@ function App() {
       </GridItem>
 
       <GridItem rowSpan={3} colSpan={3} rowStart={8} colStart={3} mb={2}> {/* Spans 3 rows, 3 columns, starts at row 8, column 3, this is the Operations area */}
-        <StepSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} steps={editor?.state.tr} />
+        <StepSection color={GLOBAL_COLOR} borderRadius={BORDER_RADIUS} steps={steps} />
       </GridItem>
 
       <GridItem rowSpan={3} colSpan={3} rowStart={8} colStart={6} mb={2}> {/* Spans 3 rows, 3 columns, starts at row 8, column 6, this is the Document Area */}
