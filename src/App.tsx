@@ -1,5 +1,5 @@
 import { Grid, GridItem } from '@chakra-ui/react';
-import { EditorContent, Extension, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import { Editor } from '@tiptap/core'; /*import from tiptap/core instead of tiptap/react to prevent type error*/
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
@@ -18,18 +18,20 @@ export const GLOBAL_COLOR = '#EAF2EF';
 
 // ********************************************************************************
 // ... Pre Configuration ..........................................................
-const initialContent = '<p>Type...</p>'
+const initialContent = '<p>Type...</p>';
+let isPluginRegistered = 0;
 function App() {
 
   // ... States ...................................................................
   const [steps, setSteps] = useState<any>();
-
+  
   // ... Setup ...................................................................
   const editor = useEditor({ extensions: [ StarterKit ], content: initialContent });
 
-  if (editor) {
+  if (editor && isPluginRegistered === 0) {
+    isPluginRegistered = 1; /*only register the plugin once*/
     const authority = new Authority(editor?.state.doc!);
-    // editor?.registerPlugin(collab({version: authority.steps?.length}) );
+    editor?.registerPlugin(collab({version: authority.steps?.length}) );
 
     editor!.view.props.dispatchTransaction= (transaction) => {
       const newState = editor!.view.state.apply(transaction);

@@ -6,20 +6,21 @@
     "@chakra-ui/react": "1.8.3",
     "@emotion/react": "11.7.1",
     "@emotion/styled": "11.6.0",
-    "@testing-library/jest-dom": "5.16.2",
-    "@testing-library/react": "12.1.3",
-    "@testing-library/user-event": "13.5.0",
+    "@tiptap/core": "2.0.0-beta.174",
     "@tiptap/react": "2.0.0-beta.108",
     "@tiptap/starter-kit": "2.0.0-beta.183",
     "@types/node": "16.11.25",
-    "@types/prosemirror-collab": "1.1.2",
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.11",
     "framer-motion": "6.2.6",
     "prosemirror-collab": "1.2.2",
+    "prosemirror-state": "1.3.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-scripts": "5.0.0",
+    "tiptap": "1.32.2",
+    "tiptap-commands": "1.17.1",
+    "tiptap-extensions": "1.35.2",
     "typescript": "4.5.5",
     "web-vitals": "2.1.4"
   },
@@ -46,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/prosemirror-collab": "1.1.2"
   }
 }
