@@ -1,27 +1,44 @@
 import { Grid, GridItem } from '@chakra-ui/react';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, Extension, useEditor } from '@tiptap/react';
 import { Editor } from '@tiptap/core'; /*import from tiptap/core instead of tiptap/react to prevent type error*/
 import { Transaction } from 'prosemirror-state';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
 
-import { MenuBar } from './component/MenuBar';
 import { DocumentSection } from './component/section/DocumentSection';
 import { MetadataSection } from './component/section/MetadataSection';
 import { SelectionSection } from './component/section/SelectionSection';
 import { StepSection } from './component/section/StepSection';
-
+import { Authority } from './plugin/collab/authority';
+import { MenuBar } from './component/MenuBar';
+import { collab } from 'prosemirror-collab';
 
 // ********************************************************************************
 const BORDER_RADIUS = 15;
 export const GLOBAL_COLOR = '#EAF2EF';
 
 // ********************************************************************************
+// ... Pre Configuration ..........................................................
 const initialContent = '<p>Type...</p>'
+export const collabPlugin = Extension.create({
+  addProseMirrorPlugins() {
+    return [ collab({version: 0}) ]
+  },
+})
+
 function App() {
+
   // ... States ...................................................................
   const [steps, setSteps] = useState<any>();
-  const editor = useEditor({ extensions: [StarterKit], content: initialContent, });
+  // const authority = new Authority(editor?.state.doc!);
+  // console.log(authority);
+
+  // ... Setup ...................................................................
+  const editor = useEditor({
+    extensions: [ StarterKit, collabPlugin ],
+    content: initialContent
+  });
+
 
   // ... Rendering Logic ..........................................................
   useEffect(() => {
@@ -37,7 +54,7 @@ function App() {
     <Grid h='100vh' templateRows='repeat(10, 1fr)' templateColumns='repeat(10, 1fr)' gap={1}> {/* // Make a 10x10 Grid */}
 
       <GridItem overflowX={'scroll'} overflowY={'scroll'} gridAutoFlow={'column'} rowSpan={7} colSpan={8} bg={GLOBAL_COLOR} borderRadius={BORDER_RADIUS}> {/* Spans 7 rows, 8 columns, Playground Component */}
-        <MenuBar editor={editor!}/>
+        <MenuBar editor={editor!} />
         <EditorContent editor={editor} />
       </GridItem>
 
