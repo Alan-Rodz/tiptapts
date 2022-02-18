@@ -1,7 +1,7 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { EditorContent, Extension, useEditor } from '@tiptap/react';
 import { Editor } from '@tiptap/core'; /*import from tiptap/core instead of tiptap/react to prevent type error*/
-import { Transaction } from 'prosemirror-state';
+// import { Transaction } from 'prosemirror-state';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
 
@@ -11,7 +11,7 @@ import { SelectionSection } from './component/section/SelectionSection';
 import { StepSection } from './component/section/StepSection';
 import { Authority } from './plugin/collab/authority';
 import { MenuBar } from './component/MenuBar';
-import { collab } from 'prosemirror-collab';
+import { collab, getVersion, receiveTransaction, sendableSteps } from 'prosemirror-collab';
 
 // ********************************************************************************
 const BORDER_RADIUS = 15;
@@ -20,29 +20,38 @@ export const GLOBAL_COLOR = '#EAF2EF';
 // ********************************************************************************
 // ... Pre Configuration ..........................................................
 const initialContent = '<p>Type...</p>'
-export const collabPlugin = Extension.create({
-  addProseMirrorPlugins() {
-    return [ collab({version: 0}) ]
-  },
-})
-
 function App() {
 
   // ... States ...................................................................
   const [steps, setSteps] = useState<any>();
-  // const authority = new Authority(editor?.state.doc!);
-  // console.log(authority);
 
   // ... Setup ...................................................................
-  const editor = useEditor({
-    extensions: [ StarterKit, collabPlugin ],
-    content: initialContent
-  });
+  const editor = useEditor({ extensions: [ StarterKit ], content: initialContent });
 
+  if (editor) {
+    const authority = new Authority(editor?.state.doc!);
+    // editor?.registerPlugin(collab({version: authority.steps?.length}) );
+
+    editor!.view.props.dispatchTransaction= (transaction) => {
+      const newState = editor!.view.state.apply(transaction);
+      editor!.view.updateState(newState);
+
+      const sendable = sendableSteps(newState);
+      if (sendable) {
+        authority.receiveSteps(sendable.version, sendable.steps, sendable.clientID)
+      }
+    }
+
+    authority.onNewSteps.push(function() {
+console.log('App', 'onNewSteps');
+      const newData = authority.stepsSince(getVersion(editor!.view.state));
+      editor!.view.dispatch(receiveTransaction(editor!.view.state, newData.steps, newData.clientIDs));
+    });
+  }
 
   // ... Rendering Logic ..........................................................
   useEffect(() => {
-    const handleUpdate = ({editor, transaction}: { editor: Editor; transaction: Transaction<any>; }) => {
+    const handleUpdate = ({editor, transaction}: { editor: Editor; transaction: any; }) => {
       setSteps(transaction.steps);
     };
     editor?.on('update', handleUpdate);

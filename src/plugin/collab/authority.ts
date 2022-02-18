@@ -15,6 +15,7 @@ export class Authority {
   }
 
   receiveSteps(version: any, steps: Step<any>[] | undefined, clientID: any) {
+console.log('Authority', 'receiveSteps');
     if (version != this.steps!.length) return
 
     // Apply and accumulate new steps
@@ -28,6 +29,7 @@ export class Authority {
   }
 
   stepsSince(version: any) {
+console.log('Authority', 'stepsSince');
     return {
       steps: this.steps!.slice(version),
       clientIDs: this.stepClientIDs.slice(version)
