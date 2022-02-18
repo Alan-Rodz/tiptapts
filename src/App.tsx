@@ -1,7 +1,6 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { EditorContent, Extension, useEditor } from '@tiptap/react';
 import { Editor } from '@tiptap/core'; /*import from tiptap/core instead of tiptap/react to prevent type error*/
-// import { Transaction } from 'prosemirror-state';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
 
